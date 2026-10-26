@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Among Us: AI Undercover</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@500;700;800&display=swap">
+<style>
+:root{--bg:#eef1fb;--card:#fff;--text:#161a33;--muted:#59608a;--line:#d6dbf0;--red:#d62839;--cyan:#16a5c9;--ok:#1b9a5f;--amber:#d18a0b;--shadow:#00000014;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c0f24;--card:#161b3a;--text:#eef0ff;--muted:#9ba3d1;--line:#2a3160;--red:#ff4d5e;--cyan:#5be3ff;--ok:#43d68f;--amber:#ffc24a;--shadow:#00000066}}
+:root[data-theme="dark"]{--bg:#0c0f24;--card:#161b3a;--text:#eef0ff;--muted:#9ba3d1;--line:#2a3160;--red:#ff4d5e;--cyan:#5be3ff;--ok:#43d68f;--amber:#ffc24a;--shadow:#00000066}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font:600 17px/1.5 Nunito,system-ui,sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+h1,h2,h3{font-family:"Lilita One",Impact,sans-serif;font-weight:400;margin:0;letter-spacing:.01em}
+h1{font-size:clamp(28px,5vw,44px)}h2{font-size:clamp(24px,4vw,34px)}h3{font-size:20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:2px solid var(--line);padding:10px 16px}
+.bar{max-width:1040px;margin:auto;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px}
+.nav{display:flex;flex-wrap:wrap;gap:6px;max-width:1040px;margin:8px auto 0}
+button{font:800 15px Nunito,sans-serif;color:var(--text);background:var(--card);border:2px solid var(--line);border-radius:999px;padding:8px 16px;cursor:pointer}
+button:hover{border-color:var(--cyan)}button:focus-visible,input:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+button.on{background:var(--cyan);border-color:var(--cyan);color:#06142a}
+button.red{background:var(--red);border-color:var(--red);color:#fff}
+.clock{font:400 26px "Lilita One",sans-serif;font-variant-numeric:tabular-nums;min-width:74px;text-align:center}
+main{max-width:1040px;margin:auto;padding:18px 16px 60px;display:grid;gap:16px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:0 4px 0 var(--shadow)}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.big{font-size:21px}.muted{color:var(--muted);font-weight:600}
+.tag{display:inline-block;background:var(--cyan);color:#06142a;border-radius:999px;padding:2px 12px;font-weight:800;font-size:14px;margin-bottom:8px}
+.timer{font:400 clamp(64px,14vw,120px)/1 "Lilita One",sans-serif;text-align:center;font-variant-numeric:tabular-nums;margin:6px 0}
+.timer.low{color:var(--red)}
+.row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.mission{border:2px dashed var(--red);border-radius:14px;padding:12px 16px;background:color-mix(in srgb,var(--red) 8%,transparent)}
+.lesson{border:2px solid var(--ok);border-radius:14px;padding:12px 16px;background:color-mix(in srgb,var(--ok) 8%,transparent)}
+.tbl{width:100%;border-collapse:collapse}.tbl td,.tbl th{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+.tbl th{font-weight:800;color:var(--muted);font-size:14px}
+.tog{padding:4px 12px;font-size:14px}.tog.on{background:var(--ok);border-color:var(--ok);color:#06142a}
+input[type=text]{font:700 15px Nunito,sans-serif;background:var(--bg);color:var(--text);border:2px solid var(--line);border-radius:10px;padding:6px 10px;width:100%;max-width:150px}
+.scroll{overflow-x:auto}
+.cards{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+.pc{height:130px;border-radius:16px;font:400 24px "Lilita One",sans-serif;background:var(--cyan);color:#06142a;border:0;box-shadow:0 5px 0 #0003}
+.pc:disabled{opacity:.3;cursor:not-allowed}
+.ov{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;padding:24px;text-align:center;background:#080a1ce6;color:#fff}
+.ov.show{display:flex}.ov .t{font:400 clamp(60px,18vw,170px)/1 "Lilita One",sans-serif}
+.ov.imp{background:#b3121fee}
+.score{font:400 44px/1 "Lilita One",sans-serif}
+.win{border-color:var(--amber);box-shadow:0 0 0 4px color-mix(in srgb,var(--amber) 35%,transparent)}
+ul{margin:6px 0 0;padding-left:22px}
+@media (prefers-reduced-motion:no-preference){.ov.show .t{animation:pop .35s ease-out}@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}}
+</style>
+</head>
+<body>
+<header><div class="bar">
+<div class="brand"><svg width="34" height="38" viewBox="0 0 34 38" aria-hidden="true"><rect x="5" y="2" width="22" height="28" rx="11" fill="#e5384a"/><rect x="14" y="9" width="16" height="10" rx="5" fill="#9fe8ff"/><rect x="2" y="14" width="7" height="14" rx="3" fill="#c42a3b"/><rect x="7" y="28" width="7" height="8" rx="3" fill="#c42a3b"/><rect x="18" y="28" width="7" height="8" rx="3" fill="#c42a3b"/></svg><h1 style="font-size:24px">Among Us: AI Undercover</h1></div>
+<div class="row" style="align-items:center"><span class="muted">Game clock</span><span class="clock" id="gc">20:00</span><button id="gb" onclick="gtoggle()">Start game</button></div>
+</div><nav class="nav" id="nav"></nav></header>
+<main id="app"></main>
+<div class="ov" id="ov" role="status" aria-live="assertive"><div class="t" id="ovt"></div><div id="ovs" class="big"></div></div>
+<div class="ov" id="md" role="dialog" aria-modal="true"><div id="mdb"></div><button onclick="hideCard()">Hide my card</button></div>
+<script>
+const TEAMS=[["A",5],["B",5],["C",5],["D",4],["E",4]];
+const ROUNDS=[
+{tag:"AI in Sales · slides 10, 13, 16–18",t:"The Personalization Trap",
+sc:"NovaShop wants to increase its online conversion rate. Marketing proposes using AI to analyze customer behavior and deliver personalized product recommendations.",
+task:"Decide what customer information AI should use and which safeguards are necessary. Find the person undermining the plan.",
+mission:"Persuade your teammates that collecting more personal data is always better for personalization, even if customers do not clearly understand how their information is used.",
+lesson:"Personalization can lift conversion, but data privacy, intrusive targeting and customer trust are real limits. More data does not automatically mean better relationships."},
+{tag:"AI in Service · slides 20–24",t:"The Heartless Chatbot",
+sc:"A customer receives a damaged birthday present and contacts NovaShop, extremely frustrated and demanding immediate help. Management wants to cut service costs with an AI chatbot.",
+task:"Decide how the company should handle emotionally sensitive complaints. Find the person undermining the plan.",
+mission:"Convince your team that the chatbot should handle every complaint on its own. Since AI can recognize emotional signals, human agents are unnecessary.",
+lesson:"AI-led service suits routine requests. For complex or emotional cases, AI-assisted service with human escalation keeps empathy and judgment in the loop (Huang & Rust, 2024)."}];
+const PH=[["Introduction & roles","00:00–03:00"],["Round 1","03:00–10:00"],["Round 2","10:00–17:00"],["Final meeting","17:00–19:00"],["Winner & takeaway","19:00–20:00"]];
+let S;try{S=JSON.parse(localStorage.getItem("auai"))}catch(e){}
+S=S||{v:"intro",sc:{},bn:[0,0,0,0,0],nm:{},rev:{}};
+const save=()=>{try{localStorage.setItem("auai",JSON.stringify(S))}catch(e){}};
+const fmt=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+function mk(id,sec,end){const o={left:sec,run:false,id:0,paint(){const e=document.getElementById(id);if(e){e.textContent=fmt(o.left);e.classList.toggle("low",o.left<=10&&o.left>0)}},set(s){clearInterval(o.id);o.run=false;o.left=s;o.paint()},go(){if(o.run){clearInterval(o.id);o.run=false;return}if(o.left<=0)return;o.run=true;o.id=setInterval(()=>{o.left--;o.paint();if(o.left<=0){clearInterval(o.id);o.run=false;end&&end()}},1000)}};return o}
+const G=mk("gc",1200,()=>flash("Game over!","Time to announce the winner"));
+const T=mk("tm",180,()=>flash("Time’s up!","Everyone points on 3"));
+function gtoggle(){G.go();document.getElementById("gb").textContent=G.run?"Pause":"Resume"}
+function flash(a,b,imp,ms){const o=document.getElementById("ov");o.classList.toggle("imp",!!imp);document.getElementById("ovt").textContent=a;document.getElementById("ovs").textContent=b||"";o.classList.add("show");setTimeout(()=>o.classList.remove("show"),ms||1600)}
+function vote(){const o=document.getElementById("ov");o.classList.remove("imp");o.classList.add("show");document.getElementById("ovs").textContent="Close your eyes and point at who you suspect";let n=3;const t=document.getElementById("ovt");t.textContent=n;const i=setInterval(()=>{n--;t.textContent=n>0?n:"VOTE!";if(n<0){clearInterval(i);o.classList.remove("show")}},1000)}
+const crew=t=>[0,1].reduce((a,r)=>{const g=S.sc[r+""+t]||{};return a+(g.f?2:0)+(g.s?1:0)+(g.k?1:0)},0)+(S.bn[t]||0);
+const imp=(r,t)=>{const g=S.sc[r+""+t]||{};return (g.e?2:0)+(g.p?1:0)};
+const go=v=>{T.set(v==="f"?20:180);S.v=v;save();render()};
+function tg(r,t,k){const key=r+""+t;S.sc[key]=S.sc[key]||{};S.sc[key][k]=!S.sc[key][k];save();render()}
+function bonus(t,n){S.bn[t]=S.bn[t]===n?0:n;save();render()}
+function rev(r){S.rev[r]=!S.rev[r];save();render();if(S.rev[r])flash("Imposters, reveal yourselves!","Check your votes",true,1800)}
+function scoreboard(){return `<div class="card"><h3>Live scoreboard</h3><div class="grid" style="margin-top:10px">${TEAMS.map((t,i)=>`<div style="text-align:center"><div class="muted">Team ${t[0]} (${t[1]} players)</div><div class="score">${crew(i)}</div></div>`).join("")}</div></div>`}
+function intro(){return `<div class="card"><span class="tag">23 players · 5 teams · 2 rounds · 20 minutes</span><h2>Can you spot a bad AI idea that sounds brilliant?</h2>
+<p class="big">You work for <b>NovaShop</b>, a fictional international e-commerce company rolling out AI in sales and customer service. In every team, one secret imposter is trying to sabotage the AI strategy. Make a responsible decision and find the imposter before NovaShop makes a costly mistake.</p></div>
+<div class="grid"><div class="card"><h3>Crewmate</h3><p>Protect NovaShop. Recommend responsible AI use, challenge suspicious reasoning and name the imposter.</p></div>
+<div class="card" style="border-color:var(--red)"><h3>Imposter</h3><p>Secretly push a flawed AI strategy. Sound reasonable, influence the decision and stay hidden.</p></div>
+<div class="card"><h3>Rules</h3><ul><li>You may lie about your recommendations.</li><li>Never show your card or say what it says.</li><li>Nobody stays silent: speak at least once.</li></ul></div></div>
+<div class="card"><h3>Schedule</h3><table class="tbl"><tbody>${PH.map(p=>`<tr><td>${p[0]}</td><td class="muted">${p[1]}</td></tr>`).join("")}</tbody></table></div>
+<div class="card"><h3>Scoring</h3><div class="scroll"><table class="tbl"><tbody><tr><td>Team identifies its imposter</td><td>+2</td></tr><tr><td>Team states a sound AI strategy</td><td>+1</td></tr><tr><td>Team explains the key AI risk</td><td>+1</td></tr><tr><td>Imposter avoids identification</td><td>+2 (imposter)</td></tr><tr><td>Imposter persuades the team to adopt the flawed strategy</td><td>+1 (imposter)</td></tr><tr><td>Final meeting: best reasoning</td><td>up to +2 per team</td></tr></tbody></table></div></div>
+<div class="card"><h3>Everyone plays on their own phone</h3><ul><li>Send students the artifact link. They open it and see the player screen.</li><li>Run the host console yourself by opening the same link with <b>#host</b> at the end.</li><li>Each round shows a 4-digit player code. Read it out when the round starts. Players pick team, seat and enter the code to see their card.</li><li>Each team agrees seat numbers out loud first (one seat per person). The role is locked on a phone after the first reveal.</li></ul></div><div class="row"><button class="on" onclick="go('cards')">Deal secret cards</button><button onclick="go(0)">Skip to Round 1</button><button onclick="if(confirm('Reset all scores and notes?')){S={v:'intro',sc:{},bn:[0,0,0,0,0],nm:{},rev:{}};save();render()}">Reset game</button></div>`}
+let D={t:0,r:0,roles:[],open:{}};
+function deal(){const n=TEAMS[D.t][1],k=Math.floor(Math.random()*n);D.roles=Array.from({length:n},(_,i)=>i===k?"i":"c");D.open={};render()}
+function cards(){return `<div class="card"><h2>Secret role dealer</h2><p class="muted">One device per team. Pick the team and round, then pass the screen. Each player taps one card, reads it privately and taps Hide. Presenters never see the roles.</p>
+<div class="row" style="margin:10px 0">${TEAMS.map((t,i)=>`<button class="${D.t===i?"on":""}" onclick="D.t=${i};D.roles=[];render()">Team ${t[0]}</button>`).join("")}</div>
+<div class="row" style="margin-bottom:12px">${[0,1].map(r=>`<button class="${D.r===r?"on":""}" onclick="D.r=${r};D.roles=[];render()">Round ${r+1}</button>`).join("")}<button class="red" onclick="deal()">Shuffle & deal</button></div>
+${D.roles.length?`<div class="cards">${D.roles.map((_,i)=>`<button class="pc" ${D.open[i]?"disabled":""} onclick="showCard(${i})">${D.open[i]?"Taken":"Card "+(i+1)}</button>`).join("")}</div>`:`<p class="muted">Press “Shuffle & deal” to prepare ${TEAMS[D.t][1]} cards for Team ${TEAMS[D.t][0]}.</p>`}</div>`}
+function showCard(i){D.open[i]=1;const m=document.getElementById("md"),isI=D.roles[i]==="i";m.classList.toggle("imp",isI);m.classList.add("show");document.getElementById("mdb").innerHTML=isI?`<div class="t">Imposter</div><p class="big" style="max-width:640px">${ROUNDS[D.r].mission}</p><p>Stay hidden. Do not show this card.</p>`:`<div class="t" style="color:#5be3ff">Crewmate</div><p class="big" style="max-width:640px">Protect NovaShop. Recommend responsible AI use and challenge suspicious reasoning.</p>`}
+function hideCard(){document.getElementById("md").classList.remove("show");render()}
+function round(r){const R=ROUNDS[r],ph=PH[r+1];return `<div class="card"><span class="tag">${R.tag}</span><h2>Emergency Meeting ${r+1}: ${R.t}</h2><p class="big">${R.sc}</p><p><b>Team task:</b> ${R.task}</p><p class="muted">Target time ${ph[1]}</p><p class="big">Player code for this round: <b style="font-size:34px;letter-spacing:.15em">${S.code[r]}</b></p></div>
+<div class="card"><div class="timer" id="tm">${fmt(T.left)}</div><div class="row"><button class="on" onclick="T.go();this.textContent=T.run?'Pause':'Resume'">${T.run?"Pause":"Start discussion"}</button><button onclick="T.set(180);render()">Reset 3:00</button><button onclick="T.left+=30;T.paint()">+30 s</button><button class="red" onclick="vote()">Call the vote</button><button onclick="rev(${r})">${S.rev[r]?"Hide reveal":"Reveal imposters"}</button></div></div>
+${S.rev[r]?`<div class="mission"><b>Imposter mission</b><br>${R.mission}</div><div class="lesson"><b>Key lesson</b><br>${R.lesson}</div>`:""}
+<div class="card"><h3>Score this round</h3><div class="scroll"><table class="tbl"><thead><tr><th>Team</th><th>Found imposter +2</th><th>Sound strategy +1</th><th>Key risk +1</th><th>Imposter name</th><th>Escaped +2</th><th>Persuaded +1</th></tr></thead><tbody>${TEAMS.map((t,i)=>{const g=S.sc[r+""+i]||{};const b=(k)=>`<button class="tog ${g[k]?"on":""}" aria-pressed="${!!g[k]}" onclick="tg(${r},${i},'${k}')">${g[k]?"Yes":"No"}</button>`;return `<tr><td><b>${t[0]}</b></td><td>${b("f")}</td><td>${b("s")}</td><td>${b("k")}</td><td><input type="text" aria-label="Imposter name team ${t[0]}" value="${(S.nm[r+""+i]||"").replace(/"/g,"&quot;")}" onchange="S.nm['${r}${i}']=this.value;save()"></td><td>${b("e")}</td><td>${b("p")}</td></tr>`}).join("")}</tbody></table></div></div>
+<div class="row"><button onclick="go('${r?"f":1}')" class="on">${r?"Final emergency meeting":"Next: Round 2"}</button></div>`}
+function fin(){return `<div class="card"><span class="tag">Final emergency meeting · 17:00–19:00</span><h2>Most suspicious argument you heard today</h2><p class="big">One speaker per team, 20 seconds. Explain why the argument sounded smart but was risky. Award up to 2 bonus points for accurate reasoning.</p></div>
+<div class="card"><div class="timer" id="tm">${fmt(T.left)}</div><div class="row"><button class="on" onclick="T.go()">Start / pause 20s</button><button onclick="T.set(20)">Reset</button></div></div>
+<div class="card"><h3>Reasoning bonus</h3><div class="grid" style="margin-top:10px">${TEAMS.map((t,i)=>`<div style="text-align:center"><b>Team ${t[0]}</b><div class="row" style="margin-top:6px">${[0,1,2].map(n=>`<button class="tog ${S.bn[i]===n?"on":""}" onclick="bonus(${i},${n})">+${n}</button>`).join("")}</div></div>`).join("")}</div></div>
+<div class="row"><button class="on" onclick="go('win')">Announce the winner</button></div>`}
+function win(){const rk=TEAMS.map((t,i)=>({t:t[0],s:crew(i)})).sort((a,b)=>b.s-a.s);let best={p:-1,n:"",t:""};TEAMS.forEach((t,i)=>[0,1].forEach(r=>{const p=imp(r,i);if(p>best.p)best={p,n:S.nm[r+""+i]||"Unnamed imposter",t:t[0]}}));
+return `<div class="card win" style="text-align:center"><span class="tag">Winning AI Strategy Team</span><h1 style="font-size:clamp(48px,12vw,110px)">Team ${rk[0].t}</h1><p class="big">${rk[0].s} points</p><p class="big">Master Imposter: <b>${best.p>0?best.n+" (Team "+best.t+", "+best.p+" pts)":"no one escaped this time"}</b></p></div>
+<div class="card"><h3>Final ranking</h3><table class="tbl"><tbody>${rk.map((x,i)=>`<tr><td>${i+1}.</td><td><b>Team ${x.t}</b></td><td>${x.s} pts</td></tr>`).join("")}</tbody></table></div>
+<div class="card"><h3>What we learned</h3><ul><li>AI can improve personalization, automate routine tasks and support service employees.</li><li>Efficiency alone is not enough: privacy, authentic empathy, human oversight and responsible governance matter.</li><li>The real challenge is knowing when, where and how to use AI responsibly (the OTTO case).</li></ul><p class="muted">The imposters only played a role. They do not believe the flawed strategy.</p></div>`}
+function render(){if(!HOST)return playerView();document.querySelector("header").style.display="";const V=[["intro","Intro"],["cards","Role cards"],[0,"Round 1"],[1,"Round 2"],["f","Final"],["win","Winner"]];
+document.getElementById("nav").innerHTML=V.map(v=>`<button class="${S.v===v[0]?"on":""}" onclick="go(${typeof v[0]==="number"?v[0]:"'"+v[0]+"'"})">${v[1]}</button>`).join("");
+const v=S.v;document.getElementById("app").innerHTML=(v==="intro"?intro():v==="cards"?cards():v==="f"?fin():v==="win"?win():round(v))+(v==="intro"||v==="cards"?"":scoreboard());T.paint();G.paint()}
+try{localStorage.removeItem("auai_host")}catch(e){}
+const HOST=location.hash==="#host"||(()=>{try{return sessionStorage.getItem("auai_host")==="1"}catch(e){return false}})();
+function hostPin(){const p=prompt("Host PIN");if(p==="nova2026"){try{sessionStorage.setItem("auai_host","1")}catch(e){}location.reload()}}
+addEventListener("hashchange",()=>location.reload());
+function mkc(){const a=[0,1,2].map(()=>Math.floor(Math.random()*10));return a.join("")+(a[0]+a[1]+a[2])%10}
+const okc=c=>/^\d{4}$/.test(c)&&(+c[0]+ +c[1]+ +c[2])%10===+c[3];
+function hs(s){let h=5381;for(const ch of s)h=((h<<5)+h+ch.charCodeAt(0))>>>0;return h}
+S.code=S.code||[mkc(),mkc()];save();
+let P={t:null,r:0,seat:null,c:"",msg:""};
+function lockGet(){try{return JSON.parse(localStorage.getItem("auai_p"+P.r))}catch(e){return null}}
+function showRole(isI,r){const m=document.getElementById("md");m.classList.toggle("imp",isI);m.classList.add("show");document.getElementById("mdb").innerHTML=isI?`<div class="t">Imposter</div><p class="big" style="max-width:640px">${ROUNDS[r].mission}</p><p>Stay hidden. Do not show your screen.</p>`:`<div class="t" style="color:#5be3ff">Crewmate</div><p class="big" style="max-width:640px">Protect NovaShop. Recommend responsible AI use and challenge suspicious reasoning.</p><p>Do not show your screen.</p>`}
+function showMine(){const L=lockGet();const c=L?L.c:(document.getElementById("pc").value||"").trim();P.c=c;if(!L&&(P.t==null||P.seat==null)){P.msg="Pick your team and seat first.";return render()}if(!L&&!okc(c)){P.msg="That code doesn’t look right. Check the screen and try again.";return render()}P.msg="";if(!L){try{localStorage.setItem("auai_p"+P.r,JSON.stringify({t:P.t,s:P.seat,c}))}catch(e){}}const t=L?L.t:P.t,s=L?L.s:P.seat;showRole(hs(c+"|"+t+"|"+P.r)%TEAMS[t][1]===s,P.r)}
+function playerView(){document.querySelector("header").style.display="none";const L=lockGet();if(L){P.t=L.t;P.seat=L.s}const n=P.t!=null?TEAMS[P.t][1]:0;
+document.getElementById("app").innerHTML=`<div class="card"><span class="tag">Secret role</span><h2>Among Us: AI Undercover</h2><p class="muted">Pick your round, team and seat, then type the code from the screen. Keep your phone hidden from your teammates.</p></div>
+<div class="card"><h3>Round</h3><div class="row" style="justify-content:flex-start;margin:8px 0 14px">${[0,1].map(r=>`<button class="${P.r===r?"on":""}" onclick="P.r=${r};P.msg='';render()">Round ${r+1}</button>`).join("")}</div>
+<h3>Your team</h3><div class="row" style="justify-content:flex-start;margin:8px 0 14px">${TEAMS.map((t,i)=>`<button ${L?"disabled":""} class="${P.t===i?"on":""}" onclick="P.t=${i};P.seat=null;render()">Team ${t[0]}</button>`).join("")}</div>
+${n?`<h3>Your seat in the team</h3><div class="row" style="justify-content:flex-start;margin:8px 0 14px">${Array.from({length:n},(_,i)=>`<button ${L?"disabled":""} class="${P.seat===i?"on":""}" onclick="P.seat=${i};render()">${i+1}</button>`).join("")}</div>`:""}
+${L?`<p class="muted">Your card for this round is locked in on this phone.</p>`:`<h3>Round code</h3><p><input type="text" id="pc" inputmode="numeric" maxlength="4" aria-label="Round code" value="${P.c}" style="font-size:26px;max-width:140px;text-align:center"></p>`}
+${P.msg?`<p style="color:var(--red)">${P.msg}</p>`:""}<button class="red" onclick="showMine()">${L?"Show my card again":"Show my card"}</button></div><p style="text-align:center"><button class="tog" onclick="hostPin()">Host</button></p>`}
+render();
+</script>
+</body>
+</html>
